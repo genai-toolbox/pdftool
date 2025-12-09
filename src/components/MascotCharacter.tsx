@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import mascotImage from '@/assets/mascot.jpeg';
+import mascotImage from '@/assets/mascot-transparent.png';
 
 export const MascotCharacter: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -38,7 +38,7 @@ export const MascotCharacter: React.FC = () => {
         <img 
           src={mascotImage} 
           alt="小助手"
-          className="w-24 h-auto drop-shadow-lg"
+          className="w-28 h-auto drop-shadow-lg"
           draggable={false}
         />
       </div>
