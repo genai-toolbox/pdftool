@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import mascotImage from '@/assets/mascot-transparent.png';
+import mascotImage from '@/assets/mascot.png';
 
 export const MascotCharacter: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div 
-      className="fixed bottom-4 right-4 z-50 pointer-events-auto select-none"
+      className="fixed bottom-0 right-4 z-50 pointer-events-auto select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Speech bubble */}
       <div 
-        className={`absolute bottom-full right-0 mb-2 transition-all duration-300 ${
+        className={`absolute bottom-full right-4 mb-2 transition-all duration-300 ${
           isHovered 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-2 pointer-events-none'
@@ -22,7 +22,7 @@ export const MascotCharacter: React.FC = () => {
           <p className="text-sm font-medium text-foreground">需要幫忙嗎？ ✨</p>
         </div>
         {/* Bubble tail */}
-        <div className="absolute bottom-0 right-8 translate-y-full">
+        <div className="absolute bottom-0 right-10 translate-y-full">
           <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-card" 
                style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.05))' }} 
           />
@@ -38,7 +38,7 @@ export const MascotCharacter: React.FC = () => {
         <img 
           src={mascotImage} 
           alt="小助手"
-          className="w-28 h-auto drop-shadow-lg"
+          className="w-40 h-auto drop-shadow-xl"
           draggable={false}
         />
       </div>
