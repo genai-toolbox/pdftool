@@ -287,7 +287,7 @@ export const PdfReplacer: React.FC = () => {
               variant="secondary"
               className="w-full"
             >
-              加入替換清單
+              第二步：加入替換清單
             </Button>
           </div>
 
@@ -313,10 +313,13 @@ export const PdfReplacer: React.FC = () => {
             onClick={handleExecuteReplace}
             disabled={isProcessing || replaceRules.length === 0}
             size="lg"
-            className="w-full"
+            className="w-full flex-col h-auto py-3"
           >
-            <Replace className="w-5 h-5" />
-            {isProcessing ? '處理中...' : '開始處理並下載新 PDF'}
+            <span className="text-xs opacity-80">第三步</span>
+            <span className="flex items-center gap-2">
+              <Replace className="w-5 h-5" />
+              {isProcessing ? '處理中...' : '開始處理並下載新 PDF'}
+            </span>
           </Button>
 
           {status && (
