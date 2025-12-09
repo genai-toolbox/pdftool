@@ -12,7 +12,7 @@ const Index = () => {
         <div className="text-center mb-6 space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
             <Sparkles className="w-4 h-4" />
-            PDF 簡報工具箱
+            大師姐的工具包
           </div>
           <h1 className="text-3xl font-bold gradient-text">
             NotebookLM 簡報後製工具箱
