@@ -3,10 +3,8 @@ import { PdfConverter } from "@/components/PdfConverter";
 import { PdfReplacer } from "@/components/PdfReplacer";
 import { MascotCharacter } from "@/components/MascotCharacter";
 import { FileImage, Replace, Sparkles, ShieldCheck } from "lucide-react";
-
 const Index = () => {
-  return (
-    <div className="min-h-screen py-8 px-4 flex flex-col">
+  return <div className="min-h-screen py-8 px-4 flex flex-col">
       <div className="max-w-2xl mx-auto flex-1">
         {/* Header */}
         <div className="text-center mb-6 space-y-4">
@@ -17,9 +15,7 @@ const Index = () => {
           <h1 className="text-3xl font-bold gradient-text">
             NotebookLM 簡報後製工具箱
           </h1>
-          <p className="text-muted-foreground">
-            NotebookLM 下載的 PDF 簡報，總覺得差了那麼一點點？
-          </p>
+          <p className="text-muted-foreground">NotebookLM 下載的 PDF 簡報，總覺得差了那麼一點點？ 🤔</p>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xl mx-auto">
             這個小工具能將 PDF 轉為高畫質圖檔，讓你針對特定頁面重新詠唱，
             或進入 Canva / Lovart 進行微調。
@@ -60,12 +56,7 @@ const Index = () => {
       <footer className="text-center text-sm text-muted-foreground mt-8 pb-4">
         <p>
           Made with ❤️ by{" "}
-          <a 
-            href="https://www.facebook.com/vivichen.sister" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-primary hover:underline font-medium"
-          >
+          <a href="https://www.facebook.com/vivichen.sister" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
             Vivi Chen 大師姐
           </a>
           {" "}| © 2025
@@ -74,8 +65,6 @@ const Index = () => {
 
       {/* Mascot */}
       <MascotCharacter />
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
