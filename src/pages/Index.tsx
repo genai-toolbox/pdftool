@@ -2,14 +2,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PdfConverter } from "@/components/PdfConverter";
 import { PdfReplacer } from "@/components/PdfReplacer";
 import { MascotCharacter } from "@/components/MascotCharacter";
-import { FileImage, Replace, Sparkles } from "lucide-react";
+import { FileImage, Replace, Sparkles, ShieldCheck } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen py-8 px-4 flex flex-col">
+      <div className="max-w-2xl mx-auto flex-1">
         {/* Header */}
-        <div className="text-center mb-8 space-y-3">
+        <div className="text-center mb-6 space-y-3">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
             <Sparkles className="w-4 h-4" />
             PDF 簡報工具箱
@@ -20,6 +20,12 @@ const Index = () => {
           <p className="text-muted-foreground">
             高品質 PDF 轉圖檔 & 智慧頁面替換
           </p>
+          
+          {/* Privacy Notice */}
+          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
+            <ShieldCheck className="w-4 h-4 text-secondary" />
+            <span>所有運算皆在您的瀏覽器內完成，檔案不會上傳至雲端伺服器，請安心使用。</span>
+          </div>
         </div>
 
         {/* Main Card */}
@@ -43,12 +49,23 @@ const Index = () => {
             </TabsContent>
           </Tabs>
         </div>
-
-        {/* Footer */}
-        <p className="text-center text-sm text-muted-foreground mt-6">
-          所有檔案處理皆在本機完成，不會上傳至任何伺服器
-        </p>
       </div>
+
+      {/* Footer */}
+      <footer className="text-center text-sm text-muted-foreground mt-8 pb-4">
+        <p>
+          Made with ❤️ by{" "}
+          <a 
+            href="https://www.facebook.com/vivichen.sister" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-primary hover:underline font-medium"
+          >
+            Vivi Chen 大師姐
+          </a>
+          {" "}| © 2025
+        </p>
+      </footer>
 
       {/* Mascot */}
       <MascotCharacter />
