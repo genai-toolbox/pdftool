@@ -35,7 +35,7 @@ const Index = () => {
             <TabsList className="rounded-b-none border-b border-border/50">
               <TabsTrigger value="convert" className="gap-2">
                 <FileImage className="w-4 h-4" />
-                PDF 轉高畫質圖檔
+                PDF 轉高畫質圖檔 (PNG)
               </TabsTrigger>
               <TabsTrigger value="replace" className="gap-2">
                 <Replace className="w-4 h-4" />
