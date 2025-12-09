@@ -9,16 +9,21 @@ const Index = () => {
     <div className="min-h-screen py-8 px-4 flex flex-col">
       <div className="max-w-2xl mx-auto flex-1">
         {/* Header */}
-        <div className="text-center mb-6 space-y-3">
+        <div className="text-center mb-6 space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
             <Sparkles className="w-4 h-4" />
             PDF 簡報工具箱
           </div>
           <h1 className="text-3xl font-bold gradient-text">
-            NotebookLM 簡報工具
+            NotebookLM 簡報後製工具箱
           </h1>
           <p className="text-muted-foreground">
-            高品質 PDF 轉圖檔 & 智慧頁面替換
+            NotebookLM 下載的 PDF 簡報，總覺得差了那麼一點點？
+          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-xl mx-auto">
+            這個小工具能將 PDF 轉為高畫質圖檔，讓你針對特定頁面重新詠唱，
+            或進入 Canva / Lovart 進行微調。
+            最後透過「PDF頁面替換」功能無縫整合，補足 AI 簡報的最後一哩路！
           </p>
           
           {/* Privacy Notice */}
