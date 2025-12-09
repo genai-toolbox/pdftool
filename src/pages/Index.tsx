@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PdfConverter } from "@/components/PdfConverter";
 import { PdfReplacer } from "@/components/PdfReplacer";
+import { MascotCharacter } from "@/components/MascotCharacter";
 import { FileImage, Replace, Sparkles } from "lucide-react";
 
 const Index = () => {
@@ -48,6 +49,9 @@ const Index = () => {
           所有檔案處理皆在本機完成，不會上傳至任何伺服器
         </p>
       </div>
+
+      {/* Mascot */}
+      <MascotCharacter />
     </div>
   );
 };
