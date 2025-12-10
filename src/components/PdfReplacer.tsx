@@ -27,7 +27,17 @@ interface ImageCheckResult {
   message: string;
 }
 
-export const PdfReplacer: React.FC = () => {
+interface SharedPdfData {
+  data: ArrayBuffer;
+  fileName: string;
+  pageCount: number;
+}
+
+interface PdfReplacerProps {
+  sharedPdf?: SharedPdfData | null;
+}
+
+export const PdfReplacer: React.FC<PdfReplacerProps> = ({ sharedPdf }) => {
   const [pdfData, setPdfData] = useState<ArrayBuffer | null>(null);
   const [pdfInfo, setPdfInfo] = useState({ fileName: '', pageCount: 0 });
   const [replaceRules, setReplaceRules] = useState<ReplaceRule[]>([]);
@@ -271,6 +281,17 @@ export const PdfReplacer: React.FC = () => {
     setStatus('');
   }, []);
 
+  // 使用共享的 PDF（從第一步傳來的）
+  const handleUseSharedPdf = useCallback(() => {
+    if (!sharedPdf) return;
+    setPdfData(sharedPdf.data);
+    setPdfInfo({
+      fileName: sharedPdf.fileName,
+      pageCount: sharedPdf.pageCount,
+    });
+    setReplaceRules([]);
+  }, [sharedPdf]);
+
   return (
     <div className="space-y-6 p-4 sm:p-6">
       {/* Step ① 上傳原始 PDF */}
@@ -283,13 +304,35 @@ export const PdfReplacer: React.FC = () => {
         </div>
         
         {!pdfData ? (
-          <UploadZone
-            onFileSelect={handlePdfSelect}
-            accept="application/pdf"
-            icon="pdf"
-            title="點擊或拖曳上傳 PDF"
-            subtitle="選擇要進行頁面替換的 PDF 檔案"
-          />
+          <div className="space-y-3">
+            {/* 如果有共享 PDF，顯示使用原始檔案的選項 */}
+            {sharedPdf && (
+              <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
+                <div className="flex items-center gap-2 text-sm text-primary">
+                  <CheckCircle className="w-4 h-4" />
+                  <span>偵測到第一步已上傳的 PDF</span>
+                </div>
+                <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-background/80">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground truncate">{sharedPdf.fileName}</p>
+                    <p className="text-xs text-muted-foreground">{sharedPdf.pageCount} 頁</p>
+                  </div>
+                  <Button onClick={handleUseSharedPdf} size="sm" variant="secondary">
+                    使用此檔案
+                  </Button>
+                </div>
+              </div>
+            )}
+            
+            {/* 上傳新檔案區域 */}
+            <UploadZone
+              onFileSelect={handlePdfSelect}
+              accept="application/pdf"
+              icon="pdf"
+              title={sharedPdf ? "或上傳其他 PDF" : "點擊或拖曳上傳 PDF"}
+              subtitle="選擇要進行頁面替換的 PDF 檔案"
+            />
+          </div>
         ) : (
           <FileInfo
             fileName={pdfInfo.fileName}
