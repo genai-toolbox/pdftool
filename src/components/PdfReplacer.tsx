@@ -9,7 +9,7 @@ import { ReplaceRuleItem } from './ReplaceRuleItem';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
-import { ImagePlus, Replace, AlertCircle, CheckCircle } from 'lucide-react';
+import { ImagePlus, Replace, AlertCircle, CheckCircle, X, Image as ImageIcon } from 'lucide-react';
 
 // 設定 PDF.js Worker
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -30,7 +30,7 @@ export const PdfReplacer: React.FC = () => {
   const [pdfInfo, setPdfInfo] = useState({ fileName: '', pageCount: 0 });
   const [replaceRules, setReplaceRules] = useState<ReplaceRule[]>([]);
   const [targetPage, setTargetPage] = useState('');
-  const [tempImage, setTempImage] = useState<{ data: ArrayBuffer; name: string } | null>(null);
+  const [tempImage, setTempImage] = useState<{ data: ArrayBuffer; name: string; previewUrl: string } | null>(null);
   const [imageCheck, setImageCheck] = useState<ImageCheckResult>({ status: 'idle', message: '' });
   const [isProcessing, setIsProcessing] = useState(false);
   const [status, setStatus] = useState('');
@@ -77,6 +77,7 @@ export const PdfReplacer: React.FC = () => {
         setTempImage({
           data: evt.target?.result as ArrayBuffer,
           name: file.name,
+          previewUrl: objectUrl, // Keep the URL for preview
         });
       };
       reader.readAsArrayBuffer(file);
@@ -92,11 +93,18 @@ export const PdfReplacer: React.FC = () => {
         if (!isRatioPerfect) msg += `比例非 16:9，系統將自動補黑邊以維持畫面完整。`;
         setImageCheck({ status: 'warning', message: msg });
       }
-      
-      URL.revokeObjectURL(objectUrl);
     };
     img.src = objectUrl;
   }, []);
+
+  const handleClearImage = useCallback(() => {
+    if (tempImage?.previewUrl) {
+      URL.revokeObjectURL(tempImage.previewUrl);
+    }
+    setTempImage(null);
+    setImageCheck({ status: 'idle', message: '' });
+    if (imageInputRef.current) imageInputRef.current.value = '';
+  }, [tempImage]);
 
   const handleAddRule = useCallback(() => {
     const pageNum = parseInt(targetPage);
@@ -124,6 +132,10 @@ export const PdfReplacer: React.FC = () => {
         .sort((a, b) => a.pageNum - b.pageNum);
     });
 
+    // Clean up preview URL before clearing
+    if (tempImage?.previewUrl) {
+      URL.revokeObjectURL(tempImage.previewUrl);
+    }
     setTargetPage('');
     setTempImage(null);
     setImageCheck({ status: 'idle', message: '' });
@@ -257,30 +269,62 @@ export const PdfReplacer: React.FC = () => {
             </div>
 
             <div className="p-5 rounded-xl bg-muted/30 border border-border/50 space-y-4">
-              <div className="flex gap-3">
+              {/* Image Preview or Upload Button */}
+              {tempImage ? (
+                <div className="flex items-center gap-4 p-3 rounded-xl bg-accent/10 border border-accent/30">
+                  <div className="w-20 h-14 rounded-lg overflow-hidden bg-black flex-shrink-0">
+                    <img 
+                      src={tempImage.previewUrl} 
+                      alt="預覽" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <ImageIcon className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="font-medium text-foreground truncate">{tempImage.name}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">已選擇圖片</p>
+                  </div>
+                  <button
+                    onClick={handleClearImage}
+                    className="p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={handleImageSelect}
+                    className="hidden"
+                  />
+                  <Button
+                    variant="muted"
+                    onClick={() => imageInputRef.current?.click()}
+                    className="w-full"
+                  >
+                    <ImagePlus className="w-4 h-4" />
+                    選擇新圖片
+                  </Button>
+                </>
+              )}
+
+              {/* Page Number Input */}
+              <div className="flex gap-3 items-center">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">替換至第</span>
                 <Input
                   type="number"
                   value={targetPage}
                   onChange={(e) => setTargetPage(e.target.value)}
-                  placeholder="頁碼 (如: 3)"
-                  className="w-28"
+                  placeholder="頁碼"
+                  className="w-20"
                   min={1}
                 />
-                <input
-                  ref={imageInputRef}
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  onChange={handleImageSelect}
-                  className="hidden"
-                />
-                <Button
-                  variant="muted"
-                  onClick={() => imageInputRef.current?.click()}
-                  className="flex-1"
-                >
-                  <ImagePlus className="w-4 h-4" />
-                  選擇新圖片
-                </Button>
+                <span className="text-sm text-muted-foreground">頁</span>
               </div>
 
               {imageCheck.status !== 'idle' && (
