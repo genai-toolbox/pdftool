@@ -1,4 +1,4 @@
-import { ExternalLink, Sparkles, Paintbrush, Eraser, Play, ArrowRight } from "lucide-react";
+import { ExternalLink, Play, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -6,32 +6,32 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import geminiLogo from "@/assets/gemini-logo.png";
+import lovartLogo from "@/assets/lovart-logo.png";
+import canvaLogo from "@/assets/canva-logo.jpeg";
 
 const tools = [
   {
     name: "Gemini Nano Banana Pro",
     description: "使用 AI 重新生成整張圖片，適合需要大幅度修改的頁面",
-    icon: Sparkles,
+    logo: geminiLogo,
     url: "https://aistudio.google.com/",
-    color: "from-purple-500 to-pink-500",
     tips: ["上傳 PNG 圖片", "描述你想要的修改", "下載生成的新圖片"],
     videoId: "v7coObJUWwk",
   },
   {
     name: "Lovart.ai",
     description: "專業的 AI 圖片編輯工具，支援「編輯文字」功能直接修改圖片中的文字",
-    icon: Paintbrush,
+    logo: lovartLogo,
     url: "https://www.lovart.ai/",
-    color: "from-blue-500 to-cyan-500",
     tips: ["上傳需要修改的頁面", "使用「編輯文字」功能修改文字內容", "匯出高畫質圖片"],
     videoId: "X7-8ddTnRkg",
   },
   {
     name: "Canva",
     description: "使用魔術橡皮擦、背景移除等功能進行細節調整",
-    icon: Eraser,
+    logo: canvaLogo,
     url: "https://www.canva.com/",
-    color: "from-teal-500 to-green-500",
     tips: ["將圖片拖入 Canva 編輯器", "使用魔術橡皮擦移除不需要的元素", "調整文字、顏色或版面"],
     videoId: "lkZdHxJVBTI",
   },
@@ -64,11 +64,13 @@ export const ExternalEditGuide = ({ onNextStep }: ExternalEditGuideProps) => {
           >
             <div className="p-4">
               <div className="flex items-start gap-4">
-                {/* Icon */}
-                <div
-                  className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shadow-lg`}
-                >
-                  <tool.icon className="w-6 h-6 text-white" />
+                {/* Logo */}
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden shadow-lg bg-white">
+                  <img 
+                    src={tool.logo} 
+                    alt={`${tool.name} logo`} 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
                 {/* Content */}
