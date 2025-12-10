@@ -18,6 +18,8 @@ interface ReplaceRule {
   pageNum: number;
   imageData: ArrayBuffer;
   fileName: string;
+  newImagePreview: string;      // 新圖片預覽 URL
+  originalPagePreview: string;  // 原始頁面預覽 URL
 }
 
 interface ImageCheckResult {
@@ -106,11 +108,37 @@ export const PdfReplacer: React.FC = () => {
     if (imageInputRef.current) imageInputRef.current.value = '';
   }, [tempImage]);
 
-  const handleAddRule = useCallback(() => {
+  // 生成 PDF 頁面縮圖
+  const generatePageThumbnail = useCallback(async (pageNum: number): Promise<string> => {
+    if (!pdfData) return '';
+    
+    try {
+      const pdf = await pdfjs.getDocument(pdfData.slice(0)).promise;
+      const page = await pdf.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 0.3 }); // 小縮圖
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d')!;
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      
+      await page.render({ canvasContext: context, viewport }).promise;
+      
+      const dataUrl = canvas.toDataURL('image/png');
+      page.cleanup();
+      
+      return dataUrl;
+    } catch (error) {
+      console.error('生成縮圖失敗:', error);
+      return '';
+    }
+  }, [pdfData]);
+
+  const handleAddRule = useCallback(async () => {
     const pageNum = parseInt(targetPage);
     
-    if (!pageNum || pageNum < 1) {
-      alert('請輸入有效的頁碼');
+    if (!pageNum || pageNum < 1 || pageNum > pdfInfo.pageCount) {
+      alert(`請輸入有效的頁碼 (1-${pdfInfo.pageCount})`);
       return;
     }
     
@@ -119,32 +147,46 @@ export const PdfReplacer: React.FC = () => {
       return;
     }
 
+    // 生成原始頁面縮圖
+    const originalPagePreview = await generatePageThumbnail(pageNum);
+
+    const newRule: ReplaceRule = {
+      pageNum,
+      imageData: tempImage.data,
+      fileName: tempImage.name,
+      newImagePreview: tempImage.previewUrl,
+      originalPagePreview,
+    };
+
     setReplaceRules(prev => {
       const existingIndex = prev.findIndex(r => r.pageNum === pageNum);
       if (existingIndex >= 0) {
         if (!confirm(`第 ${pageNum} 頁已有設定，要覆蓋嗎？`)) return prev;
+        // 清理舊的預覽 URL
+        const oldRule = prev[existingIndex];
+        if (oldRule.newImagePreview) URL.revokeObjectURL(oldRule.newImagePreview);
         const newRules = [...prev];
         newRules.splice(existingIndex, 1);
-        return [...newRules, { pageNum, imageData: tempImage.data, fileName: tempImage.name }]
-          .sort((a, b) => a.pageNum - b.pageNum);
+        return [...newRules, newRule].sort((a, b) => a.pageNum - b.pageNum);
       }
-      return [...prev, { pageNum, imageData: tempImage.data, fileName: tempImage.name }]
-        .sort((a, b) => a.pageNum - b.pageNum);
+      return [...prev, newRule].sort((a, b) => a.pageNum - b.pageNum);
     });
 
-    // Clean up preview URL before clearing
-    if (tempImage?.previewUrl) {
-      URL.revokeObjectURL(tempImage.previewUrl);
-    }
+    // 不要 revoke previewUrl，因為現在要保留給 ReplaceRuleItem 使用
     setTargetPage('');
     setTempImage(null);
     setImageCheck({ status: 'idle', message: '' });
     if (imageInputRef.current) imageInputRef.current.value = '';
-  }, [targetPage, tempImage]);
+  }, [targetPage, tempImage, pdfInfo.pageCount, generatePageThumbnail]);
 
   const handleRemoveRule = useCallback((index: number) => {
-    setReplaceRules(prev => prev.filter((_, i) => i !== index));
+    setReplaceRules(prev => {
+      const rule = prev[index];
+      if (rule?.newImagePreview) URL.revokeObjectURL(rule.newImagePreview);
+      return prev.filter((_, i) => i !== index);
+    });
   }, []);
+
 
   const handleExecuteReplace = useCallback(async () => {
     if (!pdfData || replaceRules.length === 0) return;
@@ -360,11 +402,13 @@ export const PdfReplacer: React.FC = () => {
                   替換清單 ({replaceRules.length} 項)
                 </Label>
                 <div className="space-y-2">
-                  {replaceRules.map((rule, index) => (
+                {replaceRules.map((rule, index) => (
                     <ReplaceRuleItem
                       key={`${rule.pageNum}-${index}`}
                       pageNum={rule.pageNum}
                       fileName={rule.fileName}
+                      originalPreview={rule.originalPagePreview}
+                      newPreview={rule.newImagePreview}
                       onRemove={() => handleRemoveRule(index)}
                     />
                   ))}
