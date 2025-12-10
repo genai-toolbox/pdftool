@@ -1,10 +1,19 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PdfConverter } from "@/components/PdfConverter";
 import { PdfReplacer } from "@/components/PdfReplacer";
+import { ExternalEditGuide } from "@/components/ExternalEditGuide";
 import { MascotCharacter } from "@/components/MascotCharacter";
-import { FileImage, Replace, Sparkles, ShieldCheck } from "lucide-react";
+import { FileImage, Replace, Sparkles, ShieldCheck, Palette, ChevronRight } from "lucide-react";
+
+const steps = [
+  { value: "convert", label: "PDF 轉 PNG", icon: FileImage },
+  { value: "edit", label: "外部編輯", icon: Palette },
+  { value: "replace", label: "頁面替換", icon: Replace },
+];
+
 const Index = () => {
-  return <div className="min-h-screen py-8 px-4 flex flex-col">
+  return (
+    <div className="min-h-screen py-8 px-4 flex flex-col">
       <div className="max-w-2xl mx-auto flex-1">
         {/* Header */}
         <div className="text-center mb-6 space-y-4">
@@ -32,18 +41,36 @@ const Index = () => {
         {/* Main Card */}
         <div className="glass-card overflow-hidden transition-shadow duration-300">
           <Tabs defaultValue="convert" className="w-full">
-            <TabsList className="rounded-b-none border-b border-border/50">
-              <TabsTrigger value="convert" className="gap-2">
-                <FileImage className="w-4 h-4" />
-                PDF 轉高畫質圖檔 (PNG)
-              </TabsTrigger>
-              <TabsTrigger value="replace" className="gap-2">
-                <Replace className="w-4 h-4" />
-                PDF 頁面替換
-              </TabsTrigger>
+            {/* Step Indicator Tabs */}
+            <TabsList className="w-full h-auto p-0 bg-transparent rounded-b-none border-b border-border/50">
+              <div className="w-full flex items-center">
+                {steps.map((step, index) => (
+                  <div key={step.value} className="flex items-center flex-1">
+                    <TabsTrigger
+                      value={step.value}
+                      className="flex-1 relative py-4 px-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 transition-all duration-200 gap-2"
+                    >
+                      {/* Step Number Badge */}
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0">
+                        {index + 1}
+                      </span>
+                      <step.icon className="w-4 h-4 shrink-0" />
+                      <span className="text-sm font-medium truncate">{step.label}</span>
+                    </TabsTrigger>
+                    {/* Arrow Separator */}
+                    {index < steps.length - 1 && (
+                      <ChevronRight className="w-5 h-5 text-muted-foreground/50 shrink-0 -mx-1" />
+                    )}
+                  </div>
+                ))}
+              </div>
             </TabsList>
+
             <TabsContent value="convert">
               <PdfConverter />
+            </TabsContent>
+            <TabsContent value="edit">
+              <ExternalEditGuide />
             </TabsContent>
             <TabsContent value="replace">
               <PdfReplacer />
@@ -65,6 +92,8 @@ const Index = () => {
 
       {/* Mascot */}
       <MascotCharacter />
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
