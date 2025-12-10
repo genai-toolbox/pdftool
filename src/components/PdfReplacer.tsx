@@ -219,109 +219,139 @@ export const PdfReplacer: React.FC = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <UploadZone
-        onFileSelect={handlePdfSelect}
-        accept="application/pdf"
-        icon="pdf"
-        title="① 上傳原始 PDF 簡報"
-        subtitle="選擇要進行頁面替換的 PDF 檔案"
-      />
-
-      {pdfData && (
-        <div className="space-y-6 animate-slide-up">
+      {/* Step ① 上傳原始 PDF */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">
+            ①
+          </span>
+          <span className="font-semibold text-foreground">上傳原始 PDF 簡報</span>
+        </div>
+        
+        {!pdfData ? (
+          <UploadZone
+            onFileSelect={handlePdfSelect}
+            accept="application/pdf"
+            icon="pdf"
+            title="點擊或拖曳上傳 PDF"
+            subtitle="選擇要進行頁面替換的 PDF 檔案"
+          />
+        ) : (
           <FileInfo
             fileName={pdfInfo.fileName}
             pageCount={pdfInfo.pageCount}
             onRemove={handleReset}
           />
+        )}
+      </div>
 
-          <div className="p-5 rounded-xl bg-muted/30 border border-border/50 space-y-4">
-            <Label className="text-sm font-semibold">設定替換規則</Label>
-            
-            <div className="flex gap-3">
-              <Input
-                type="number"
-                value={targetPage}
-                onChange={(e) => setTargetPage(e.target.value)}
-                placeholder="頁碼 (如: 3)"
-                className="w-28"
-                min={1}
-              />
-              <input
-                ref={imageInputRef}
-                type="file"
-                accept="image/png, image/jpeg"
-                onChange={handleImageSelect}
-                className="hidden"
-              />
+      {pdfData && (
+        <div className="space-y-6 animate-slide-up">
+          {/* Step ② 設定替換規則 */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-secondary text-secondary-foreground text-sm font-bold">
+                ②
+              </span>
+              <span className="font-semibold text-foreground">設定替換規則</span>
+            </div>
+
+            <div className="p-5 rounded-xl bg-muted/30 border border-border/50 space-y-4">
+              <div className="flex gap-3">
+                <Input
+                  type="number"
+                  value={targetPage}
+                  onChange={(e) => setTargetPage(e.target.value)}
+                  placeholder="頁碼 (如: 3)"
+                  className="w-28"
+                  min={1}
+                />
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+                <Button
+                  variant="muted"
+                  onClick={() => imageInputRef.current?.click()}
+                  className="flex-1"
+                >
+                  <ImagePlus className="w-4 h-4" />
+                  選擇新圖片
+                </Button>
+              </div>
+
+              {imageCheck.status !== 'idle' && (
+                <div className={`flex items-start gap-2 text-sm p-3 rounded-lg ${
+                  imageCheck.status === 'perfect' 
+                    ? 'bg-secondary/10 text-secondary' 
+                    : imageCheck.status === 'warning'
+                    ? 'bg-yellow-500/10 text-yellow-600'
+                    : 'bg-muted text-muted-foreground'
+                }`}>
+                  {imageCheck.status === 'perfect' ? (
+                    <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  ) : imageCheck.status === 'warning' ? (
+                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  ) : null}
+                  <span>{imageCheck.message}</span>
+                </div>
+              )}
+
               <Button
-                variant="muted"
-                onClick={() => imageInputRef.current?.click()}
-                className="flex-1"
+                onClick={handleAddRule}
+                disabled={!tempImage || !targetPage}
+                variant="secondary"
+                className="w-full"
               >
-                <ImagePlus className="w-4 h-4" />
-                選擇新圖片
+                加入替換清單
               </Button>
             </div>
 
-            {imageCheck.status !== 'idle' && (
-              <div className={`flex items-start gap-2 text-sm p-3 rounded-lg ${
-                imageCheck.status === 'perfect' 
-                  ? 'bg-secondary/10 text-secondary' 
-                  : imageCheck.status === 'warning'
-                  ? 'bg-yellow-500/10 text-yellow-600'
-                  : 'bg-muted text-muted-foreground'
-              }`}>
-                {imageCheck.status === 'perfect' ? (
-                  <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                ) : imageCheck.status === 'warning' ? (
-                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                ) : null}
-                <span>{imageCheck.message}</span>
+            {replaceRules.length > 0 && (
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold">
+                  替換清單 ({replaceRules.length} 項)
+                </Label>
+                <div className="space-y-2">
+                  {replaceRules.map((rule, index) => (
+                    <ReplaceRuleItem
+                      key={`${rule.pageNum}-${index}`}
+                      pageNum={rule.pageNum}
+                      fileName={rule.fileName}
+                      onRemove={() => handleRemoveRule(index)}
+                    />
+                  ))}
+                </div>
               </div>
             )}
-
-            <Button
-              onClick={handleAddRule}
-              disabled={!tempImage || !targetPage}
-              variant="secondary"
-              className="w-full"
-            >
-              ② 加入替換清單
-            </Button>
           </div>
 
-          {replaceRules.length > 0 && (
-            <div className="space-y-3">
-              <Label className="text-sm font-semibold">
-                替換清單 ({replaceRules.length} 項)
-              </Label>
-              <div className="space-y-2">
-                {replaceRules.map((rule, index) => (
-                  <ReplaceRuleItem
-                    key={`${rule.pageNum}-${index}`}
-                    pageNum={rule.pageNum}
-                    fileName={rule.fileName}
-                    onRemove={() => handleRemoveRule(index)}
-                  />
-                ))}
-              </div>
+          {/* Step ③ 開始處理 */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-accent text-accent-foreground text-sm font-bold">
+                ③
+              </span>
+              <span className="font-semibold text-foreground">開始處理並下載</span>
             </div>
-          )}
 
-          <Button
-            onClick={handleExecuteReplace}
-            disabled={isProcessing || replaceRules.length === 0}
-            size="lg"
-            className="w-full"
-          >
-            <Replace className="w-5 h-5" />
-            {isProcessing ? '處理中...' : '③ 開始處理並下載新 PDF'}
-          </Button>
+            <Button
+              onClick={handleExecuteReplace}
+              disabled={isProcessing || replaceRules.length === 0}
+              size="lg"
+              className="w-full"
+            >
+              <Replace className="w-5 h-5" />
+              {isProcessing ? '處理中...' : '下載新 PDF'}
+            </Button>
 
-          {status && (
-            <ProgressBar progress={isProcessing ? 50 : 100} status={status} />
-          )}
+            {status && (
+              <ProgressBar progress={isProcessing ? 50 : 100} status={status} />
+            )}
+          </div>
         </div>
       )}
     </div>
