@@ -223,7 +223,7 @@ export const PdfReplacer: React.FC = () => {
         onFileSelect={handlePdfSelect}
         accept="application/pdf"
         icon="pdf"
-        title="第一步：上傳原始 PDF 簡報"
+        title="① 上傳原始 PDF 簡報"
         subtitle="選擇要進行頁面替換的 PDF 檔案"
       />
 
@@ -287,7 +287,7 @@ export const PdfReplacer: React.FC = () => {
               variant="secondary"
               className="w-full"
             >
-              第二步：加入替換清單
+              ② 加入替換清單
             </Button>
           </div>
 
@@ -313,13 +313,10 @@ export const PdfReplacer: React.FC = () => {
             onClick={handleExecuteReplace}
             disabled={isProcessing || replaceRules.length === 0}
             size="lg"
-            className="w-full flex-col h-auto py-3"
+            className="w-full"
           >
-            <span className="text-xs opacity-80">第三步</span>
-            <span className="flex items-center gap-2">
-              <Replace className="w-5 h-5" />
-              {isProcessing ? '處理中...' : '開始處理並下載新 PDF'}
-            </span>
+            <Replace className="w-5 h-5" />
+            {isProcessing ? '處理中...' : '③ 開始處理並下載新 PDF'}
           </Button>
 
           {status && (
