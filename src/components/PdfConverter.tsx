@@ -9,7 +9,7 @@ import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 // 設定 PDF.js Worker
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -20,7 +20,11 @@ interface PDFState {
   pageCount: number;
 }
 
-export const PdfConverter: React.FC = () => {
+interface PdfConverterProps {
+  onNextStep?: () => void;
+}
+
+export const PdfConverter: React.FC<PdfConverterProps> = ({ onNextStep }) => {
   const [pdfState, setPdfState] = useState<PDFState>({ pdf: null, fileName: '', pageCount: 0 });
   const [scale, setScale] = useState('3');
   const [pageRange, setPageRange] = useState('');
@@ -206,6 +210,21 @@ export const PdfConverter: React.FC = () => {
               <Sparkles className="w-5 h-5" />
               {isProcessing ? '處理中...' : '開始轉換並下載 ZIP'}
             </Button>
+
+            {/* Next Step Button */}
+            {status === '完成！下載已開始。' && onNextStep && (
+              <Button
+                onClick={onNextStep}
+                variant="outline"
+                size="lg"
+                className="w-full gap-2 border-primary/50 text-primary hover:bg-primary/10"
+              >
+                <span className="flex flex-col items-center leading-tight">
+                  <span>第二步：外部編輯</span>
+                </span>
+                <ArrowRight className="w-5 h-5" />
+              </Button>
+            )}
           </div>
 
           {(isProcessing || progress > 0) && (

@@ -1,4 +1,4 @@
-import { ExternalLink, Sparkles, Paintbrush, Eraser, Play, ChevronDown } from "lucide-react";
+import { ExternalLink, Sparkles, Paintbrush, Eraser, Play, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -37,7 +37,11 @@ const tools = [
   },
 ];
 
-export const ExternalEditGuide = () => {
+interface ExternalEditGuideProps {
+  onNextStep?: () => void;
+}
+
+export const ExternalEditGuide = ({ onNextStep }: ExternalEditGuideProps) => {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -126,10 +130,24 @@ export const ExternalEditGuide = () => {
       </Accordion>
 
       {/* Footer Note */}
-      <div className="text-center">
+      <div className="text-center space-y-4">
         <p className="text-xs text-muted-foreground">
           編輯完成後，請將修改好的圖片儲存為 PNG 或 JPG 格式，以便在第三步驟中使用
         </p>
+        
+        {/* Next Step Button */}
+        {onNextStep && (
+          <Button
+            onClick={onNextStep}
+            size="lg"
+            className="gap-2"
+          >
+            <span className="flex flex-col items-center leading-tight">
+              <span>第三步：PDF 頁面替換</span>
+            </span>
+            <ArrowRight className="w-5 h-5" />
+          </Button>
+        )}
       </div>
     </div>
   );
