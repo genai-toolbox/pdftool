@@ -276,7 +276,7 @@ export const PdfReplacer: React.FC = () => {
       {/* Step ① 上傳原始 PDF */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-secondary text-secondary-foreground text-sm font-bold">
             ①
           </span>
           <span className="font-semibold text-foreground">上傳原始 PDF 簡報</span>
