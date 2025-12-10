@@ -16,8 +16,8 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("convert");
   
   return (
-    <div className="min-h-screen py-8 px-4 flex flex-col">
-      <div className="max-w-2xl mx-auto flex-1">
+    <div className="min-h-screen py-8 px-4 flex flex-col overflow-x-hidden">
+      <div className="max-w-2xl mx-auto flex-1 w-full">
         {/* Header */}
         <div className="text-center mb-6 space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
@@ -35,9 +35,9 @@ const Index = () => {
           </p>
           
           {/* Privacy Notice */}
-          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
-            <ShieldCheck className="w-4 h-4 text-secondary" />
-            <span>所有運算皆在您的瀏覽器內完成，檔案不會上傳至雲端伺服器，請安心使用。</span>
+          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-4 py-2 rounded-full flex-wrap justify-center">
+            <ShieldCheck className="w-4 h-4 text-secondary flex-shrink-0" />
+            <span className="text-center">所有運算皆在您的瀏覽器內完成，檔案不會上傳至雲端伺服器，請安心使用。</span>
           </div>
         </div>
 
@@ -48,21 +48,21 @@ const Index = () => {
             <TabsList className="w-full h-auto p-0 bg-transparent rounded-b-none border-b border-border/50">
               <div className="w-full flex items-center">
                 {steps.map((step, index) => (
-                  <div key={step.value} className="flex items-center flex-1">
+                  <div key={step.value} className="flex items-center flex-1 min-w-0">
                     <TabsTrigger
                       value={step.value}
-                      className="flex-1 relative py-4 px-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 transition-all duration-200 gap-2"
+                      className="flex-1 relative py-3 px-2 sm:py-4 sm:px-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 transition-all duration-200 gap-1 sm:gap-2 min-w-0"
                     >
                       {/* Step Number Badge */}
-                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0">
+                      <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0">
                         {index + 1}
                       </span>
-                      <step.icon className="w-4 h-4 shrink-0" />
-                      <span className="text-sm font-medium truncate">{step.label}</span>
+                      <step.icon className="w-4 h-4 shrink-0 hidden sm:block" />
+                      <span className="text-xs sm:text-sm font-medium truncate">{step.label}</span>
                     </TabsTrigger>
                     {/* Arrow Separator */}
                     {index < steps.length - 1 && (
-                      <ChevronRight className="w-5 h-5 text-muted-foreground/50 shrink-0 -mx-1" />
+                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground/50 shrink-0 -mx-0.5 sm:-mx-1" />
                     )}
                   </div>
                 ))}

@@ -272,7 +272,7 @@ export const PdfReplacer: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 sm:p-6">
       {/* Step ① 上傳原始 PDF */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">

@@ -43,7 +43,7 @@ interface ExternalEditGuideProps {
 
 export const ExternalEditGuide = ({ onNextStep }: ExternalEditGuideProps) => {
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
         <h3 className="text-lg font-semibold text-foreground">
