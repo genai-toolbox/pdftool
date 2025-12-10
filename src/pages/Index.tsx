@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PdfConverter } from "@/components/PdfConverter";
 import { PdfReplacer } from "@/components/PdfReplacer";
@@ -12,8 +12,20 @@ const steps = [
   { value: "replace", label: "頁面替換", icon: Replace },
 ];
 
+// 共享的 PDF 資料類型
+export interface SharedPdfData {
+  data: ArrayBuffer;
+  fileName: string;
+  pageCount: number;
+}
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState("convert");
+  const [sharedPdf, setSharedPdf] = useState<SharedPdfData | null>(null);
+  
+  const handlePdfUploaded = useCallback((pdfData: SharedPdfData) => {
+    setSharedPdf(pdfData);
+  }, []);
   
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -76,13 +88,16 @@ const Index = () => {
             </TabsList>
 
             <TabsContent value="convert">
-              <PdfConverter onNextStep={() => handleTabChange("edit")} />
+              <PdfConverter 
+                onNextStep={() => handleTabChange("edit")} 
+                onPdfUploaded={handlePdfUploaded}
+              />
             </TabsContent>
             <TabsContent value="edit">
               <ExternalEditGuide onNextStep={() => handleTabChange("replace")} />
             </TabsContent>
             <TabsContent value="replace">
-              <PdfReplacer />
+              <PdfReplacer sharedPdf={sharedPdf} />
             </TabsContent>
           </Tabs>
         </div>
