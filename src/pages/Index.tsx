@@ -15,6 +15,12 @@ const steps = [
 const Index = () => {
   const [activeTab, setActiveTab] = useState("convert");
   
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    // 滾動到頂部
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
   return (
     <div className="min-h-screen py-8 px-4 flex flex-col overflow-x-hidden">
       <div className="max-w-2xl mx-auto flex-1 w-full">
@@ -43,7 +49,7 @@ const Index = () => {
 
         {/* Main Card */}
         <div className="glass-card overflow-hidden transition-shadow duration-300">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             {/* Step Indicator Tabs */}
             <TabsList className="w-full h-auto p-0 bg-transparent rounded-b-none border-b border-border/50">
               <div className="w-full flex items-center">
@@ -70,10 +76,10 @@ const Index = () => {
             </TabsList>
 
             <TabsContent value="convert">
-              <PdfConverter onNextStep={() => setActiveTab("edit")} />
+              <PdfConverter onNextStep={() => handleTabChange("edit")} />
             </TabsContent>
             <TabsContent value="edit">
-              <ExternalEditGuide onNextStep={() => setActiveTab("replace")} />
+              <ExternalEditGuide onNextStep={() => handleTabChange("replace")} />
             </TabsContent>
             <TabsContent value="replace">
               <PdfReplacer />
